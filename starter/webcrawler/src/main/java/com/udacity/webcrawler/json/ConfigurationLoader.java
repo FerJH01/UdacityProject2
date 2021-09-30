@@ -3,8 +3,11 @@ package com.udacity.webcrawler.json;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
+
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -29,8 +32,15 @@ public final class ConfigurationLoader {
   public CrawlerConfiguration load() {
     // TODO: Fill in this method.
 
+    try(Reader reader = Files.newBufferedReader(path)){
 
+      return read(reader);
 
+    }catch(IOException e){
+
+      System.out.print("There was an issue with the loading process");
+      e.printStackTrace();
+    }
 
     return new CrawlerConfiguration.Builder().build();
   }
@@ -42,22 +52,26 @@ public final class ConfigurationLoader {
    * @return a crawler configuration
    */
   public static CrawlerConfiguration read(Reader reader) {
+
     // This is here to get rid of the unused variable warning.
     Objects.requireNonNull(reader);
     // TODO: Fill in this method
 
     ObjectMapper objectMapper = new ObjectMapper();
+    objectMapper.disable(JsonParser.Feature.AUTO_CLOSE_SOURCE);
 
     try {
 
-      objectMapper.readValue(new File("C:\\Users\\ferjh\\Documents\\UdacityProject2\\starter\\webcrawler\\src\\main\\config.sample_config.json"), CrawlerConfiguration.class);
+      CrawlerConfiguration.Builder crawlerConfigurationBuilder =  objectMapper.readValue(reader, CrawlerConfiguration.Builder.class);
+
+      return crawlerConfigurationBuilder.build();
 
     }catch (IOException e){
 
       System.out.println("There was an issue with the JSON parsing");
+      e.printStackTrace();
+
+      return null;
     }
-
-
-    return new CrawlerConfiguration.Builder().build();
   }
 }

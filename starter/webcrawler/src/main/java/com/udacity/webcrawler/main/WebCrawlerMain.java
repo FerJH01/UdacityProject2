@@ -15,6 +15,7 @@ import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Objects;
 
 public final class WebCrawlerMain {
@@ -36,9 +37,28 @@ public final class WebCrawlerMain {
 
     CrawlResult result = crawler.crawl(config.getStartPages());
     CrawlResultWriter resultWriter = new CrawlResultWriter(result);
+    String resultPath = config.getResultPath();
     // TODO: Write the crawl results to a JSON file (or System.out if the file name is empty)
+
+    if(!resultPath.isEmpty()){
+      resultWriter.write(Path.of(this.config.getResultPath()));
+    }else{
+      Writer writer = new BufferedWriter(new OutputStreamWriter(System.out));
+      resultWriter.write(writer);
+    }
+
     // TODO: Write the profile data to a text file (or System.out if the file name is empty)
+
+    if(!config.getProfileOutputPath().isEmpty()){
+      Path path = Paths.get(config.getProfileOutputPath());
+      profiler.writeData(path);
+    }else{
+      Writer writer = new BufferedWriter(new OutputStreamWriter(System.out));
+      profiler.writeData(writer);
+      writer.flush();
+    }
   }
+
 
   public static void main(String[] args) throws Exception {
     if (args.length != 1) {
