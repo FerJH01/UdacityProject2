@@ -35,4 +35,25 @@ Q4. Identify three (3) different design patterns used in this project, and expla
     For each pattern, name one thing about the pattern that you LIKED, and one thing you DISLIKED. If you did not like
     anything, you can name two things you disliked.
 
+The 3 different DP I have identified are the following:
+
+    - Builder: This DP is implemented to handle the creations of CrawlerConfiguration objects through Jackson plugin
+    which allows serialization of objects to JSON and the other way around. Here is applied to parse the configuration in JSON format
+    to CrawlerConfiguration objets. What I liked about this DP is that it allows flexibility since it is easy to add more
+    parameters if needed and encourages immutability and also method chaining. What I dislike is the amount of code needed
+    to implement it which increases complexity.
+
+    - Abstract Factory: This DP is implemented to handle the PageParserImpls creation through the PageParser get()
+    method in the PageParserFactory Class.
+    This is accomplished by the implementation of the interface PageParser which has the get() method that is called
+    every time a new PageParserIml object needs to be created passing only the url parameter and not the other two parameters.
+    I liked the level of abstraction this DP has since it allows to hide construction details from the world.
+    What I dislike is the level of complexity added with extra classes and interfaces.
+
+    - Dependency injection:
+    This DP is used in the WebCrawlerMain.java to inject a WebCrawler and Profiler objects. This is useful since it allows
+    the DI Framework to handle the creation of these objects automatically without having to instantiate them.
+    What I dislike about this DP is that sometimes it is a bit hard to follow the code and all the extra configuration needed for work.
+
+
 
