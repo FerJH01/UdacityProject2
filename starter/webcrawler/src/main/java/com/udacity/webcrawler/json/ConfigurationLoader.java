@@ -9,6 +9,7 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**
  * A static utility class that loads a JSON configuration file.
@@ -51,27 +52,32 @@ public final class ConfigurationLoader {
    * @param reader a Reader pointing to a JSON string that contains crawler configuration.
    * @return a crawler configuration
    */
-  public static CrawlerConfiguration read(Reader reader) {
+  @JsonDeserialize(builder = CrawlerConfiguration.Builder.class)
+  public static CrawlerConfiguration read(Reader reader) throws IOException{
 
     // This is here to get rid of the unused variable warning.
     Objects.requireNonNull(reader);
     // TODO: Fill in this method
-
     ObjectMapper objectMapper = new ObjectMapper();
+
     objectMapper.disable(JsonParser.Feature.AUTO_CLOSE_SOURCE);
+    return objectMapper.readValue(reader, CrawlerConfiguration.Builder.class).build();
+//
+//    try {
+//
+//      final CrawlerConfiguration.Builder crawlerConfigurationBuilder =  objectMapper.readValue(reader, CrawlerConfiguration.Builder.class);
+//
+//      return crawlerConfigurationBuilder.build();
+//
+//    }catch (IOException e){
+//
+//      System.out.println("There was an issue with the JSON parsing");
+//      e.printStackTrace();
 
-    try {
 
-      CrawlerConfiguration.Builder crawlerConfigurationBuilder =  objectMapper.readValue(reader, CrawlerConfiguration.Builder.class);
 
-      return crawlerConfigurationBuilder.build();
 
-    }catch (IOException e){
-
-      System.out.println("There was an issue with the JSON parsing");
-      e.printStackTrace();
-
-      return null;
+//      return null;
     }
   }
-}
+
