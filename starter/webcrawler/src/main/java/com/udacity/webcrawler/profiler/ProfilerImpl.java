@@ -3,7 +3,12 @@ package com.udacity.webcrawler.profiler;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.io.Writer;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.time.Clock;
 import java.time.ZonedDateTime;
 import java.util.Objects;
@@ -26,20 +31,51 @@ final class ProfilerImpl implements Profiler {
   }
 
   @Override
-  public <T> T wrap(Class<T> klass, T delegate) {
+  public <T> T wrap(Class<T> klass, T delegate) throws IllegalArgumentException{
     Objects.requireNonNull(klass);
 
     // TODO: Use a dynamic proxy (java.lang.reflect.Proxy) to "wrap" the delegate in a
     //       ProfilingMethodInterceptor and return a dynamic proxy from this method.
     //       See https://docs.oracle.com/javase/10/docs/api/java/lang/reflect/Proxy.html.
 
-    return delegate;
+    if(!classProfiled(klass)){
+      throw new IllegalArgumentException(
+              "Not a profiled method"
+      );
+    }
+    InvocationHandler handler = new ProfilingMethodInterceptor(clock, delegate, state);
+
+    T proxy = (T) Proxy.newProxyInstance(klass.getClassLoader(), new Class[]{klass}, handler);
+    return proxy;
   }
+
 
   @Override
   public void writeData(Path path) {
     // TODO: Write the ProfilingState data to the given file path. If a file already exists at that
     //       path, the new data should be appended to the existing file.
+
+    try {
+      Files.write(path, (state + "\n").getBytes(),
+              StandardOpenOption.CREATE,
+              StandardOpenOption.WRITE,
+              StandardOpenOption.APPEND);
+    }catch(IOException e){
+      e.printStackTrace();
+    }
+  }
+
+  boolean classProfiled(Class<?> klas){
+    Method[] methods = klas.getDeclaredMethods();
+    if(methods.length == 0){
+      return false;
+    }
+    for(Method method : methods){
+      if(method.getAnnotation(Profiled.class) != null){
+        return true;
+      }
+    }
+    return false;
   }
 
   @Override

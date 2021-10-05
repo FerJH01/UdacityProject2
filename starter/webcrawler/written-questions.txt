@@ -18,15 +18,26 @@ Q2. Your manager ran your crawler on her old personal computer, using the config
     (a) Suggest one reason why the sequential web crawler was able to read more web pages than the parallel crawler.
         (Hint: Try setting "parallelism" to 1 in the JSON configs to simulate your manager's computer.)
 
+        I believe the issue is related to hardware limitations since though you run the application as parallel app,
+        you still need a multi-processor PC to notice any improvement in performance and the fact that you want to run
+        a multithreaded application in a single CPU, could make the application slower than running the sequential app.
+
     (b) Suggest one scenario in which the parallel web crawler will almost certainly perform better than the sequential
         crawler. Why will it perform better?
+
+        when you got a multiprocessor PC it should run faster than the sequential since having different CPUs allows the application
+        to create multiple threads and run subroutines at the same time.
 
 
 Q3. Analyze your method profiler through the lens of Aspect Oriented Programming, by answering the following questions:
 
     (a) What cross-cutting concern is being addressed by the com.udacity.webcrawler.profiler.Profiler class?
 
-    (b) What are the join points of the Profiler in the web crawler program?
+    What is being addressed is performance profiling since we want to record the running time of methods with the Profiled annotations and not all methods,
+    evaluating the performance of each method.
+
+   (b) What are the join points of the Profiler in the web crawler program?
+   The methods that have the annotation @Profiled will be the ones that will be checked.
 
 
 Q4. Identify three (3) different design patterns used in this project, and explain which interfaces, classes, and/or
