@@ -211,7 +211,7 @@ public final class CrawlerConfiguration {
      * @param patterns one or more regular expressions that define a valid {@link Pattern}.
      */
 
-    @JsonProperty("patters")
+    @JsonProperty("IgnoredUrls")
     public Builder addIgnoredUrls(String... patterns) {
       for (String pattern : patterns) {
         ignoredUrls.add(Objects.requireNonNull(pattern));
@@ -230,7 +230,7 @@ public final class CrawlerConfiguration {
      *
      * @param patterns one or more regular expressions that define a valid {@link Pattern}.
      */
-    @JsonProperty("patters")
+    @JsonProperty("ignoredWords")
     public Builder addIgnoredWords(String... patterns) {
       for (String pattern : patterns) {
         ignoredWords.add(Objects.requireNonNull(pattern));
@@ -277,7 +277,7 @@ public final class CrawlerConfiguration {
      *
      * <p>See {@link #getTimeout()}.
      */
-    @JsonSetter("seconds")
+    @JsonSetter("TimeoutSeconds")
     public Builder setTimeoutSeconds(int seconds) {
       this.timeoutSeconds = seconds;
       return this;
